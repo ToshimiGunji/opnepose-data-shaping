@@ -24,6 +24,7 @@ def main():
             confidence_index = confidence_data.index(max(confidence_data))
             for j in range(len(part_candidates_data)):  # 座標のリスト数分だけ回す
                 print()
+                print()
 
             print(joint_list[i] + "joint")
             print(confidence_data)
