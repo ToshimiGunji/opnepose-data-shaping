@@ -1,6 +1,4 @@
 import json
-from pprint import pprint
-import sys
 import glob
 import collections as cl
 
@@ -8,9 +6,6 @@ import collections as cl
 def main():
     files = glob.glob("./json/*")
     joint_list = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17"]
-    file = "./json_sub/wakingVideoLowQ_000000000129_keypoints.json"
-    file_num = 0
-    print(type(files))
 
     # ファイルごとに操作
     for num, file in enumerate(files):
@@ -25,8 +20,8 @@ def main():
 
                 # 信頼度のデータだけを格納
                 for j in range(int(len(part_candidates_data[joint_list[i]]) / 3)):  # confidenceの数だけ繰り返す
-                    confidence_data_pos = (j + 1) * 3 - 1  # 信頼度データの場所
-                    confidence_data.append(part_candidates_data[joint_list[i]][confidence_data_pos])
+                    c_data_pos = (j + 1) * 3 - 1  # 信頼度データの場所
+                    confidence_data.append(part_candidates_data[joint_list[i]][c_data_pos])
 
                 # max関数のエラー回避のためにconfidence_dataが空の場合はスキップ。信頼度の最大値インデックスを返す
                 if len(confidence_data) == 0:
@@ -44,9 +39,6 @@ def main():
 
                     # 空の要素以外を格納する
                     shaped_data[joint_list[i]] = [datum for datum in part_candidates_data[joint_list[i]] if datum != ""]
-
-            # 最終データを出力
-            # pprint(shaped_data)
 
             # データの上書き、新規作成
             fw = open('./json_new/new_{0}.json'.format(num), 'w')
