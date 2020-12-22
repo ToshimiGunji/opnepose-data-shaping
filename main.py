@@ -1,15 +1,18 @@
 import json
 import glob
 import collections as cl
+import sys
+from pprint import pprint
+from natsort import natsorted
 
 
 def main():
-    files = glob.glob("./json/*")
+    files = natsorted(glob.glob("./json/*"))
     joint_list = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
                   "10", "11", "12", "13", "14", "15", "16", "17"]
 
     # ファイルごとに操作
-    for num, file in enumerate(files):
+    for num, file in enumerate(files):  # 新しく作成したファイルの保存のために添え字も取得
         with open(file) as open_file:
             json_data = json.load(open_file)
             shaped_data = cl.OrderedDict()  # いらない要素を削除した後の数値を格納するリスト。順番を維持したCollection型
