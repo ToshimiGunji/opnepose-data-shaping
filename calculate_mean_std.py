@@ -21,7 +21,7 @@ for file in files:
 for i in range(len(joint_list)):
     coordinates_mean = np.mean(only_c_data[joint_list[i]])
     coordinates_std = np.std(only_c_data[joint_list[i]])
-    print(joint_list[i])
+    print("joint = " + joint_list[i])
     print("c_mean", coordinates_mean)
     print("c_std", coordinates_std)
     print()
