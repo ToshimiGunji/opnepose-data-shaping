@@ -18,6 +18,7 @@ for file in files:
         coordinates_data = json.load(open_file)
         for i in range(len(coordinates_data)):
             only_c_data[joint_list[i]].append(coordinates_data[joint_list[i]][2])
+
 for i in range(len(joint_list)):
     coordinates_mean = np.mean(only_c_data[joint_list[i]])
     coordinates_std = np.std(only_c_data[joint_list[i]])
