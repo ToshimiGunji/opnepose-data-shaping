@@ -4,6 +4,7 @@ import collections as cl
 import sys
 from pprint import pprint
 from natsort import natsorted
+from numpy import nan
 
 files = natsorted(glob.glob("./json/*"))
 joint_list = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
@@ -11,6 +12,7 @@ joint_list = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
 
 # ファイルごとに操作
 for num, file in enumerate(files):  # 新しく作成したファイルの保存のために添え字も取得
+    print(file)
     with open(file) as open_file:
         json_data = json.load(open_file)
         shaped_data = cl.OrderedDict()  # いらない要素を削除した後の数値を格納するリスト。順番を維持したCollection型
@@ -28,7 +30,8 @@ for num, file in enumerate(files):  # 新しく作成したファイルの保存
             # max関数のエラー回避のためにconfidence_dataが空の場合はスキップ。信頼度の最大値インデックスを返す
             if len(confidence_data) == 0:
                 confidence_index = 0  # エラー回避のために代入
-                part_candidates_data[joint_list[i]] = [0, 0, 0]  # 各要素に0を代入
+                part_candidates_data[joint_list[i]] = [nan, nan, nan]  # 各要素に0を代入
+                print(i)
             else:
                 confidence_index = confidence_data.index(max(confidence_data))  # 信頼度の最大値インデックスを返す
 
