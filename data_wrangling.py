@@ -48,5 +48,5 @@ for num, file in enumerate(files):  # 新しく作成したファイルの保存
                                               if datum != ""]  # 空の要素以外を格納する
 
         # データの上書き、新規作成
-        fw = open('./json_new/new_{0}.json'.format(num), 'w')
+        fw = open('./shaped_json/0/new_{0}.json'.format(num), 'w')
         json.dump(shaped_data, fw, indent=4)

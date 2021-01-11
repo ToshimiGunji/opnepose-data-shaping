@@ -17,7 +17,7 @@ def get_distance(x1, y1, x2, y2):
 
 
 pd.set_option('display.max_columns', 100)
-files = natsorted(glob.glob("./json_new/*"))
+files = natsorted(glob.glob("./shaped_json/0/*"))
 feature_df = pd.DataFrame({"Dx1": [], "Dx2": [], "Dx3": [], "Dx4": [], "Dx5": [], "Dx6": [],
                            "Dy1": [], "Dy2": [], "Dy3": [],
                            "Dis0_1": [], "Dis2_3": [], "Dis3_4": [], "Dis1_8": [], "Dis8_9": [], "Dis9_10": [],
@@ -103,6 +103,9 @@ std_feature_names = ["stDx1", "stDx2", "stDx3", "stDx4", "stDx5", "stDx6",
 std_val_list = list(pd.DataFrame.std(feature_df))
 STD = pd.DataFrame([std_val_list[:-13]], columns=std_feature_names)
 
-print(MEAN)
-print("\n\n")
-print(STD)
+CF = pd.concat([MEAN, STD], axis=1)
+print(CF)
+
+# データの上書き、新規作成
+path = './feature_sets/feature_1.json'
+CF.to_json(path)
