@@ -17,12 +17,12 @@ def get_distance(x1, y1, x2, y2):
 
 
 pd.set_option('display.max_columns', 100)
-
+files = natsorted(glob.glob("./json_new/*"))
 feature_df = pd.DataFrame({"Dx1": [], "Dx2": [], "Dx3": [], "Dx4": [], "Dx5": [], "Dx6": [],
                            "Dy1": [], "Dy2": [], "Dy3": [],
-                           "SkeletonLength": [], "Height": []})
-
-files = natsorted(glob.glob("./json_new/*"))
+                           "Dis0_1": [], "Dis2_3": [], "Dis3_4": [], "Dis1_8": [], "Dis8_9": [], "Dis9_10": [],
+                           "Dis1_11": [], "Dis11_12": [], "Dis12_13": [], "Dis5_6": [], "Dis6_7": [], "Dis1_8and11": [],
+                           "Height": []})
 
 # ファイルごと（フレームごと）に操作
 for num, file in enumerate(files):
@@ -70,15 +70,39 @@ for num, file in enumerate(files):
                                     "Dy1": dy1,
                                     "Dy2": dy2,
                                     "Dy3": dy3,
-                                    "SkeletonLength": skeleton_len,
+                                    "Dis0_1": dis0_1,
+                                    "Dis2_3": dis2_3,
+                                    "Dis3_4": dis3_4,
+                                    "Dis1_8": dis1_8,
+                                    "Dis8_9": dis8_9,
+                                    "Dis9_10": dis9_10,
+                                    "Dis1_11": dis1_11,
+                                    "Dis11_12": dis11_12,
+                                    "Dis12_13": dis12_13,
+                                    "Dis5_6": dis5_6,
+                                    "Dis6_7": dis6_7,
+                                    "Dis1_8and11": dis1_8and11,
                                     "Height": height
                                     }
-    pprint(feature_df)
-    if num == 5:
+    if num == 10:
         break
 
+# print(feature_df)
+
 # 特徴空間の平均、標準偏差を算出（rdf）
-rdf = pd.DataFrame({"Dx1": [], "Dx2": [], "Dx3": [], "Dx4": [], "Dx5": [], "Dx6": [],
-                    "Dy1": [], "Dy2": [], "Dy3": [],
-                    "SkeletonLength": [], "Height": []
-                    })
+mean_feature_names = ["mDx1", "mDx2", "mDx3", "mDx4", "mDx5", "mDx6",
+                      "mDy1", "mDy2", "mDy3",
+                      "Dis0_1", "Dis2_3", "Dis3_4", "Dis1_8", "Dis8_9", "Dis9_10",
+                      "Dis1_11", "Dis11_12", "Dis12_13", "Dis5_6", "Dis6_7", "Dis1_8and11",
+                      "Height"]
+mean_val_list = list(pd.DataFrame.mean(feature_df))
+MEAN = pd.DataFrame([mean_val_list], columns=mean_feature_names)
+
+std_feature_names = ["stDx1", "stDx2", "stDx3", "stDx4", "stDx5", "stDx6",
+                     "stDy1", "stDy2", "stDy3"]
+std_val_list = list(pd.DataFrame.std(feature_df))
+STD = pd.DataFrame([std_val_list[:-13]], columns=std_feature_names)
+
+print(MEAN)
+print("\n\n")
+print(STD)
