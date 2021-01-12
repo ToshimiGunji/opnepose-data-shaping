@@ -24,14 +24,11 @@ x = np.array([[6, 0, 0], [3, 4, 0]])
 y = np.array([0, 1])
 z = np.array([0, 0, 0])
 
-neigh = KNeighborsClassifier(n_neighbors=1)
+neigh = KNeighborsClassifier(n_neighbors=1, p=1)
 neigh.fit(x, y)
 print(neigh.predict([z]))
 
-print(type(x))
 # 分類器の数実行
 for i in range(SUBSET_NUM):
     for file in gl_files:
-        print()
-
-    break
+        print(i)
