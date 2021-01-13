@@ -8,9 +8,14 @@ import pandas as pd
 import numpy as np
 from numpy import nan
 import os
+
 # pd.set_option('display.max_columns', 100)
 
-
+a = [1, 2, 3, 4]
+b = [5, 6, 7, 8]
+for num, (aa, bb) in enumerate(zip(a, b)):
+    print(num, aa, bb)
+sys.exit()
 from sklearn.model_selection import train_test_split
 
 # アヤメデータセット読み込み
