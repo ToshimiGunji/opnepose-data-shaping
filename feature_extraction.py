@@ -106,13 +106,8 @@ def get_CF(person_num, gl_pr, down_up, gl_pr_set):
     if down_up == "up":
         droped_MEAN = MEAN.drop(MEAN.columns[-13:], axis=1)  # upのときは静的特徴を削除
         CF = pd.concat([STD, droped_MEAN], axis=1)
-        # print("This is unchanged")
-        # print(CF, "\n\n")
         CF.columns = ["u_stDx1", "u_stDx2", "u_stDx3", "u_stDx4", "u_stDx5", "u_stDx6", "u_stDy1", "u_stDy2", "u_stDy3",
                       "u_mDx1", "u_mDx2", "u_mDx3", "u_mDx4", "u_mDx5", "u_mDx6", "u_mDy1", "u_mDy2", "u_mDy3"]
-        # print("This is changed")
-        # print(CF, "\n\n")
-
     return CF
 
 
@@ -140,7 +135,6 @@ for person in person_num:
                 for pr in pr_set:
                     cf_pr = get_CF(person, g_p, d_u, pr)
                     cf_pr_down_list.append(cf_pr) if d_u == "down" else cf_pr_up_list.append(cf_pr)
-        # pprint(cf_pr_up_list)
         # ギャラリーとプローブ特徴量をjsonに変換し保存
         if g_p == "gallery":
             for num, (d_data, u_data) in enumerate(zip(cf_gl_down_list, cf_gl_up_list)):
