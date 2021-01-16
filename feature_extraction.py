@@ -18,7 +18,7 @@ def get_distance(x1, y1, x2, y2):
     return dis
 
 
-def get_CF(person_num, gl_pr, down_up, gl_pr_set):
+def get_cf(person_num, gl_pr, down_up, gl_pr_set):
     files = natsorted(glob.glob("./json/shaped/{0}/{1}/{2}/{3}/*".format(person_num, gl_pr, down_up, gl_pr_set)))
     # 一時的に格納するデータフレーム
     feature_df = pd.DataFrame({"Dx1": [], "Dx2": [], "Dx3": [], "Dx4": [], "Dx5": [], "Dx6": [],
@@ -44,7 +44,8 @@ def get_CF(person_num, gl_pr, down_up, gl_pr_set):
             dy3 = abs(json_data["10"][1] - json_data["13"][1])
             # 静的特徴を算出
             dis0_1 = get_distance(json_data["0"][0], json_data["0"][1], json_data["1"][0], json_data["1"][1])
-            # dis1_2 = get_distance(json_data["2"][0], json_data["2"][1], json_data["3"][0], json_data["3"][1]) #横から撮影のため削除
+            # 横から撮影のため削除
+            # dis1_2 = get_distance(json_data["2"][0], json_data["2"][1], json_data["3"][0], json_data["3"][1])
             dis2_3 = get_distance(json_data["2"][0], json_data["2"][1], json_data["3"][0], json_data["3"][1])
             dis3_4 = get_distance(json_data["3"][0], json_data["3"][1], json_data["4"][0], json_data["4"][1])
             dis1_8 = get_distance(json_data["1"][0], json_data["1"][1], json_data["8"][0], json_data["8"][1])
@@ -53,7 +54,8 @@ def get_CF(person_num, gl_pr, down_up, gl_pr_set):
             dis1_11 = get_distance(json_data["1"][0], json_data["1"][1], json_data["11"][0], json_data["11"][1])
             dis11_12 = get_distance(json_data["11"][0], json_data["11"][1], json_data["12"][0], json_data["12"][1])
             dis12_13 = get_distance(json_data["12"][0], json_data["12"][1], json_data["13"][0], json_data["13"][1])
-            # dis0_5 = get_distance(json_data["2"][0], json_data["2"][1], json_data["3"][0], json_data["3"][1]) #横から撮影のため削除
+            # 横から撮影のため削除
+            # dis0_5 = get_distance(json_data["2"][0], json_data["2"][1], json_data["3"][0], json_data["3"][1])
             dis5_6 = get_distance(json_data["5"][0], json_data["5"][1], json_data["6"][0], json_data["6"][1])
             dis6_7 = get_distance(json_data["6"][0], json_data["6"][1], json_data["7"][0], json_data["7"][1])
             dis1_8and11 = (dis1_8 + dis1_11) / 2
@@ -95,19 +97,19 @@ def get_CF(person_num, gl_pr, down_up, gl_pr_set):
                          "stDy1", "stDy2", "stDy3"]
     # 平均値
     mean_val_list = list(pd.DataFrame.mean(feature_df))
-    MEAN = pd.DataFrame([mean_val_list], columns=mean_feature_names)
+    mean_df = pd.DataFrame([mean_val_list], columns=mean_feature_names)
     # 標準偏差
     std_val_list = list(pd.DataFrame.std(feature_df))
-    STD = pd.DataFrame([std_val_list[:-13]], columns=std_feature_names)
+    std_df = pd.DataFrame([std_val_list[:-13]], columns=std_feature_names)
     # 平均と標準偏差を結合
     if down_up == "down":
-        CF = pd.concat([STD, MEAN], axis=1)
+        cf = pd.concat([std_df, mean_df], axis=1)
     if down_up == "up":
-        droped_MEAN = MEAN.drop(MEAN.columns[-13:], axis=1)  # upのときは静的特徴を削除
-        CF = pd.concat([STD, droped_MEAN], axis=1)
-        CF.columns = ["u_stDx1", "u_stDx2", "u_stDx3", "u_stDx4", "u_stDx5", "u_stDx6", "u_stDy1", "u_stDy2", "u_stDy3",
+        dropped_mean = mean_df.drop(mean_df.columns[-13:], axis=1)  # upのときは静的特徴を削除
+        cf = pd.concat([std_df, dropped_mean], axis=1)
+        cf.columns = ["u_stDx1", "u_stDx2", "u_stDx3", "u_stDx4", "u_stDx5", "u_stDx6", "u_stDy1", "u_stDy2", "u_stDy3",
                       "u_mDx1", "u_mDx2", "u_mDx3", "u_mDx4", "u_mDx5", "u_mDx6", "u_mDy1", "u_mDy2", "u_mDy3"]
-    return CF
+    return cf
 
 
 # 全ファイルにアクセスして特徴量を抽出
@@ -128,11 +130,11 @@ for person in person_num:
         for d_u in down_up:
             if g_p == "gallery":  # ギャラリーデータセットへアクセス
                 for gl in gl_set:
-                    cf_gl = get_CF(person, g_p, d_u, gl)
+                    cf_gl = get_cf(person, g_p, d_u, gl)
                     cf_gl_down_list.append(cf_gl) if d_u == "down" else cf_gl_up_list.append(cf_gl)
             if g_p == "probe":  # プローブデータセットへアクセス
                 for pr in pr_set:
-                    cf_pr = get_CF(person, g_p, d_u, pr)
+                    cf_pr = get_cf(person, g_p, d_u, pr)
                     cf_pr_down_list.append(cf_pr) if d_u == "down" else cf_pr_up_list.append(cf_pr)
         # ギャラリーとプローブ特徴量をjsonに変換し保存
         if g_p == "gallery":
