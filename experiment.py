@@ -8,19 +8,19 @@ import pandas as pd
 import numpy as np
 from numpy import nan
 import os
-
+import statistics
 # pd.set_option('display.max_columns', 100)
 import random
-
-aa = ["a", "b", "c", "d", "e"]
-bb = ["e", "f", "g"]
-
-a = random.sample(aa, 3)
-print(a)
-
 from sklearn.model_selection import train_test_split
 from sklearn.datasets import load_iris
 from sklearn.neighbors import KNeighborsClassifier
+
+aa = ["a", "b", "c", "d", "e"]
+bb = ["e", "f", "g"]
+a = [1, 1, 0, 0, 2, 3, 4, 5]
+print(statistics.mode(a))
+
+sys.exit()
 
 target_path = './json/feature_sets/0/gallery/feature_0.json'
 target_path2 = './json/feature_sets/0/gallery/feature_1.json'
@@ -47,16 +47,3 @@ Y_pred = knc.predict(df1)
 print(Y_pred)
 # 評価 R^2
 # score = knc.score(X_test, Y_test)
-
-#
-# iris = load_iris()
-# iris_df = pd.DataFrame(iris.data, columns=iris.feature_names)
-# iris_target_data = pd.DataFrame(iris.target, columns=['Species'])
-#
-# X = iris.data
-# Y = iris.target
-#
-# X_train, X_test, Y_train, Y_test = train_test_split(X, Y, random_state=0)
-#
-# list_nn = []
-# list_score = []

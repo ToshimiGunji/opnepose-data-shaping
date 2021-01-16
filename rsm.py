@@ -1,19 +1,21 @@
 import json
 import glob
-import sys
-from pprint import pprint
 import statistics
 from natsort import natsorted
 import pandas as pd
-import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
+import sys
+from pprint import pprint
+import numpy as np
 
 pd.set_option('display.max_columns', 10)  # 10個結果を表示
 SUBSET_FEATURE = 10  # 部分空間の次元数
 CLASSIFIER_NUM = 100  # 分類器の数
-gl_files = natsorted(glob.glob("./feature_sets/gallery/*"))  # ギャラリーデータファイル
-pr_files = natsorted(glob.glob("./feature_sets/probe/*"))  # プロ―ブデータファイル
+MANHATTAN_DISTANCE = 1  # KNNので採用する距離の種類
+K_NEIGHBOR = 1  # KNNのKの数字
+COLUMN_DIRECTION = 1  # 列方向指定用の定数
+ROW_DIRECTION = 0  # 行方向指定用の定数
 labels = []  # 正解ラベル
 predicted_labels = []  # 弱い分類器の予測ラベル格納
 final_labels = []
@@ -42,9 +44,9 @@ for index in gl_person_num:  # 特徴量データを取り出す
                 df = pd.DataFrame(json_data)
             if g_p == "gallery":
                 labels.append(int(index))  # ギャラリーデータの場合はlabelsにラベルを追加
-                gallery_feature = pd.concat([gallery_feature, df], axis=0)
+                gallery_feature = pd.concat([gallery_feature, df], axis=ROW_DIRECTION)
             if g_p == "probe":
-                probe_feature = pd.concat([probe_feature, df], axis=0)  # プローブデータを追加
+                probe_feature = pd.concat([probe_feature, df], axis=ROW_DIRECTION)  # プローブデータを追加
     if index == "1":
         break
 
@@ -55,22 +57,21 @@ probe_feature = probe_feature.reset_index(drop=True)
 # 分類器の数実行
 for index in pr_person_num:  # プローブの人数分
     predicted_labels = []  # ラベルリストを初期化
-    for classifier in range(CLASSIFIER_NUM):  # 部分空間数
+    for classifier_num in range(CLASSIFIER_NUM):  # 部分空間数
         # ランダムに特徴量を取得
-        gl_selected_feature = gallery_feature.sample(n=10, axis=1)
+        gl_selected_feature = gallery_feature.sample(n=SUBSET_FEATURE, axis=COLUMN_DIRECTION)
         print("This is gallery data\n", gl_selected_feature)
         # 対象のプローブデータを取得
         pr_selected_feature = pd.DataFrame(probe_feature[list(gl_selected_feature.columns)])
         pr_selected_feature = pr_selected_feature.loc[[int(index)]]
         print("\nThis is probe selected data\n", pr_selected_feature)
-
         # 分類を実行
-        subset_classifier = KNeighborsClassifier(n_neighbors=1, p=1)
+        subset_classifier = KNeighborsClassifier(n_neighbors=K_NEIGHBOR, p=MANHATTAN_DISTANCE)
         subset_classifier.fit(gl_selected_feature, labels)
         print("This data is classified as {0} \n".format(subset_classifier.predict(pr_selected_feature)))
         predicted_labels.extend(subset_classifier.predict(pr_selected_feature))
         print("this is weak classifier labels", predicted_labels)
-        if classifier == 4:
+        if classifier_num == 4:
             break
     final_labels.append(statistics.mode(predicted_labels))
     print("this is the answer{0}\n\n".format(final_labels))
@@ -78,5 +79,5 @@ for index in pr_person_num:  # プローブの人数分
         break
 
 # 正答率を算出
-# recognition_score = accuracy_score(final_labels, answer_labels)*100
-# print("The recognition score is {0}".format(recognition_score))
+recognition_score = accuracy_score(final_labels, answer_labels) * 100
+print("The recognition score is {0}".format(recognition_score))

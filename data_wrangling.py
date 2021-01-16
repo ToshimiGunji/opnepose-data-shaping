@@ -1,10 +1,10 @@
 import json
 import glob
 import collections as cl
-import sys
-from pprint import pprint
 from natsort import natsorted
 from numpy import nan
+from pprint import pprint
+import sys
 
 
 def data_wrangle(person_num, gl_pr, down_up, gl_pr_set):
