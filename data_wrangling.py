@@ -47,6 +47,7 @@ def data_wrangle(person_num, gl_pr, down_up, gl_pr_set):
             # データの上書き、新規作成
             target_path = "./json/shaped/{0}/{1}/{2}/{3}/shaped_{4}.json" \
                 .format(person_num, gl_pr, down_up, gl_pr_set, num)
+            print(target_path)
             fw = open(target_path, 'w')
             json.dump(shaped_data, fw, indent=4)
 
@@ -68,5 +69,4 @@ for person in person_num:
             if g_p == "probe":  # プローブデータセットへアクセス
                 for pr in pr_set:
                     data_wrangle(person, g_p, d_u, pr)
-    if person == 1:
-        break
+    print("person {0} data is done\n\n\n".format(person))

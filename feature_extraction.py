@@ -120,8 +120,6 @@ gl_set = ["0", "1", "2"]
 pr_set = ["0"]
 
 for person in person_num:
-    if person == "1":
-        break
     for g_p in gl_pr:
         cf_gl_down_list = []  # cf のdownを一時的に格納
         cf_gl_up_list = []  # cf のupを一時的に格納
@@ -143,9 +141,11 @@ for person in person_num:
                 # データの上書き、新規作成
                 target_path = './json/feature_sets/{0}/{1}/feature_{2}.json'.format(person, g_p, num)
                 all_CF.to_json(target_path)
+                print(target_path)
         else:
             for num, (d_data, u_data) in enumerate(zip(cf_pr_down_list, cf_pr_up_list)):
                 all_CF = pd.concat([d_data, u_data], axis=1)
                 # データの上書き、新規作成
                 target_path = './json/feature_sets/{0}/{1}/feature_{2}.json'.format(person, g_p, num)
                 all_CF.to_json(target_path)
+                print(target_path)
