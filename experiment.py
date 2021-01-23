@@ -5,7 +5,7 @@ import sys
 from pprint import pprint
 from natsort import natsorted
 import pandas as pd
-import numpy as np
+from numpy import array
 from numpy import nan
 import os
 import statistics
@@ -14,36 +14,52 @@ import random
 from sklearn.model_selection import train_test_split
 from sklearn.datasets import load_iris
 from sklearn.neighbors import KNeighborsClassifier
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 
-aa = ["a", "b", "c", "d", "e"]
-bb = ["e", "f", "g"]
-a = [1, 1, 0, 0, 2, 3, 4, 5]
-print(statistics.mode(a))
+k = [1, 3, 5, 7, 9, 11]
+accuracy_rdf = [
+    [50.0, 41.66666666666667, 66.66666666666666, 33.33333333333333, 33.33333333333333, 33.33333333333333],
+    [58.333333333333336, 50.0, 50.0, 50.0, 33.33333333333333, 33.33333333333333],
+    [58.333333333333336, 33.33333333333333, 50.0, 33.33333333333333, 33.33333333333333, 33.33333333333333],
+    [50.0, 50.0, 58.333333333333336, 41.66666666666667, 33.33333333333333, 33.33333333333333],
+    [58.333333333333336, 41.66666666666667, 50.0, 33.33333333333333, 33.33333333333333, 33.33333333333333]
+]
+accuracy_af = [
+    [75.0, 83.33333333333334, 66.66666666666666, 41.66666666666667, 33.33333333333333, 25.0],
+    [75.0, 83.33333333333334, 50.0, 41.66666666666667, 33.33333333333333, 25.0],
+    [83.33333333333334, 83.33333333333334, 66.66666666666666, 41.66666666666667, 33.33333333333333, 25.0],
+    [75.0, 83.33333333333334, 58.333333333333336, 41.66666666666667, 33.33333333333333, 25.0],
+    [75.0, 83.33333333333334, 58.333333333333336, 41.66666666666667, 33.33333333333333, 25.0]
+]
 
-sys.exit()
+accuracy_cf = [
+    [75.0, 75.0, 58.333333333333336, 41.66666666666667, 25.0, 33.33333333333333],
+    [75.0, 58.333333333333336, 50.0, 41.66666666666667, 33.33333333333333, 25.0],
+    [75.0, 41.66666666666667, 58.333333333333336, 41.66666666666667, 25.0, 33.33333333333333],
+    [75.0, 66.66666666666666, 66.66666666666666, 33.33333333333333, 33.33333333333333, 25.0],
+    [75.0, 58.333333333333336, 58.333333333333336, 41.66666666666667, 25.0, 25.0]
+]
 
-target_path = './json/feature_sets/0/gallery/feature_0.json'
-target_path2 = './json/feature_sets/0/gallery/feature_1.json'
-df1 = pd.DataFrame()
-df2 = pd.DataFrame()
-with open(target_path) as open_file:
-    json_data = json.load(open_file)
-    df1 = pd.DataFrame(json_data)
-    print(df1)
+accuracy_rdf_mean = array(accuracy_rdf).mean(axis=0)
+accuracy_af_mean = array(accuracy_af).mean(axis=0)
+accuracy_cf_mean = array(accuracy_cf).mean(axis=0)
 
-with open(target_path2) as open_file:
-    json_data = json.load(open_file)
-    df2 = pd.DataFrame(json_data)
-    print(df2)
-df_all = pd.concat([df1, df2], axis=0)
-df_all = df_all.reset_index(drop=True)
-print(df_all)
+plt.figure()
+plt.plot(k, accuracy_rdf_mean, marker="D")
+plt.plot(k, accuracy_af_mean, marker="^")
+plt.plot(k, accuracy_cf_mean, marker="o")
 
-# KNeighborsClassifier
-knc = KNeighborsClassifier(n_neighbors=1, p=1)
-knc.fit(df_all, [0, 1])
-# 予測　
-Y_pred = knc.predict(df1)
-print(Y_pred)
-# 評価 R^2
-# score = knc.score(X_test, Y_test)
+plt.title("accuracy / k")
+plt.xlabel("k value")
+plt.ylabel("accuracy (%)")
+plt.title("accuracy / k", fontsize=14)
+plt.xlabel("k value", fontsize=14)
+plt.ylabel("accuracy (%)", fontsize=14)
+plt.legend(fontsize=14)
+
+plt.grid(True)
+plt.xticks([1, 3, 5, 7, 9, 11])
+plt.yticks([20, 40, 60, 80, 100])
+plt.legend(["RDF", "AF", "CF"])
+plt.show()
